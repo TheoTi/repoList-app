@@ -1,12 +1,19 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react'
+import { Image, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+
+import Constants from 'expo-constants'
+
+import logo from './assets/gitLogo.png'
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
-  );
+    <SafeAreaView style={styles.container}>
+      <Image
+        source={logo}
+        resizeMode="contain"
+      />
+    </SafeAreaView>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -15,5 +22,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: Constants.statusBarHeight,
   },
-});
+})
