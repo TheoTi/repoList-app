@@ -41,7 +41,7 @@ export default function List({ name, list, close }) {
       <FlatList
         data={repo}
         renderItem={ ({item}) => <Itens name={item.name} description={item.description} html_url={item.html_url} /> }
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index.toString()}
       />
     </Animated.View>
   );
