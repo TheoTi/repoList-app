@@ -17,21 +17,26 @@ export default function App() {
   const handleSearch = async () => {
     Keyboard.dismiss()
     setStatus('Procurando...')
-    await fetch(`https://api.github.com/users/${username}/repos`).then(async res => {
-      const rep = await res.json()
-      console.log(rep.length)
-      if (rep.length === undefined) {
-        setStatus('Usuário não encontrado.')
-      }
-      else if (rep.length === 0) {
-        setStatus('Usuário não possui repositórios.')
-      } else {
-        setRepos(rep)
-        setFieldIsVisible(false)
-        setStatus(true)
-      }
-      
-    })
+    if (username === '') {
+      setStatus('Insira o nome de usuário.')
+    }
+    else {
+      await fetch(`https://api.github.com/users/${username}/repos`).then(async res => {
+        const rep = await res.json()
+        console.log(rep.length)
+        if (rep.length === undefined) {
+          setStatus('Usuário não encontrado.')
+        }
+        else if (rep.length === 0) {
+          setStatus('Usuário não possui repositórios.')
+        } else {
+          setRepos(rep)
+          setFieldIsVisible(false)
+          setStatus(true)
+        }
+        
+      })
+    }
   }
 
   const handleCloseComponent = () => {
