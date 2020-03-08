@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
-import { Image, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { Image, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'
 
 import Constants from 'expo-constants'
+import NetInfo from '@react-native-community/netinfo'
 
 // components
 import List from './components/List'
@@ -13,6 +14,16 @@ export default function App() {
   const [username, setUsername] = useState('')
   const [status, setStatus] = useState('')
   const [repos, setRepos] = useState([])
+  const [disable, setDisable] = useState(false)
+
+  useEffect(() => {
+    NetInfo.fetch().then(state => {
+      if (state.isConnected === false) {
+        setStatus('Sem conexão')
+        setDisable(true)
+      }
+    })
+  }, [])
 
   const handleSearch = async () => {
     Keyboard.dismiss()
@@ -21,9 +32,9 @@ export default function App() {
       setStatus('Insira o nome de usuário.')
     }
     else {
-      await fetch(`https://api.github.com/users/${username}/repos`).then(async res => {
+      await fetch(`https://api.github.com/users/${username}/repos`)
+      .then(async res => {
         const rep = await res.json()
-        console.log(rep.length)
         if (rep.length === undefined) {
           setStatus('Usuário não encontrado.')
         }
@@ -35,6 +46,9 @@ export default function App() {
           setStatus(true)
         }
         
+      })
+      .catch(err => {
+        setStatus('Sem Conexão')
       })
     }
   }
@@ -63,20 +77,25 @@ export default function App() {
         }  
       >
 
-        {fieldIsVisible && <TextInput
-          placeholder="Github username"
-          placeholderTextColor="#808080"
-          autoCorrect={false}
-          style={styles.input}
-          onChangeText={name => setUsername(name)}
-          />}
+        {
+          fieldIsVisible && <TextInput
+            placeholder="Github username"
+            placeholderTextColor="#808080"
+            autoCorrect={false}
+            style={styles.input}
+            onChangeText={name => setUsername(name)}
+          />
+        }
 
-        {fieldIsVisible && <TouchableOpacity
-          style={styles.btnSearch}
-          onPress={() => handleSearch()}
-        >
-          <Text style={styles.btnText}>Buscar</Text>
-        </TouchableOpacity>}
+        {
+          fieldIsVisible && <TouchableOpacity
+            style={styles.btnSearch}
+            onPress={() => handleSearch()}
+            disabled={disable}
+          >
+            <Text style={styles.btnText}>Buscar</Text>
+          </TouchableOpacity>
+        }
         <Text style={styles.status}>{status}</Text>
       </KeyboardAvoidingView>
       {fieldIsVisible === false && <List name={username} list={repos} close={() => handleCloseComponent()}/>}
