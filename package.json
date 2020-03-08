@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-community/netinfo": "4.6.0",
     "expo": "~36.0.0",
     "expo-constants": "~8.0.0",
     "expo-vector-icons": "^10.0.1",
